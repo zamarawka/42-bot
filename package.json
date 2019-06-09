@@ -1,0 +1,46 @@
+{
+  "name": "42-bot",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "app",
+  "scripts": {
+    "start": "NODE_ENV=production node ./app",
+    "dev": "NODE_ENV=development nodemon --use_strict --quiet -e js,json,yml | pino-pretty -c -l -t",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint app db",
+    "lint:app": "eslint app",
+    "lint:db": "eslint db"
+  },
+  "engines": {
+    "node": ">= 10.0.0"
+  },
+  "author": "zamarawka",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "fast-xml-parser": "^3.12.16",
+    "giphy-api": "^2.0.1",
+    "googleapis": "^40.0.0",
+    "he": "^1.2.0",
+    "lodash": "^4.17.11",
+    "pino": "^5.12.6",
+    "read-yaml": "^1.1.0",
+    "rss-parser": "^3.7.1",
+    "sequelize": "^5.8.7",
+    "sqlite3": "^4.0.8",
+    "telegraf": "^3.30.1",
+    "xml2json": "^0.11.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "pino-pretty": "^3.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
