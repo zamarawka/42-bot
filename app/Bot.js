@@ -5,6 +5,7 @@ const mind = require('./mind');
 const isAngryBot = require('./middlewares/isAngryBot');
 const currentUserMiddleware = require('./middlewares/currentUser');
 const loggerMiddleware = require('./middlewares/logger');
+const isNewMessage = require('./middlewares/isNewMessage');
 
 const { NODE_ENV } = process.env;
 
@@ -22,6 +23,8 @@ class Bot {
     await db.authenticate();
 
     logger.info('DB connected');
+
+    this.use(isNewMessage);
 
     if (NODE_ENV === 'development') {
       this.use(loggerMiddleware);
