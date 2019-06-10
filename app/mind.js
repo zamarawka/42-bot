@@ -12,6 +12,7 @@ module.exports = (bot) => {
   bot.hears(/фото\s+(?<q>.*)$/, files.photo);
   bot.hears(/гиф\s+(?<q>.*)$/, files.gif);
 
+  bot.hears(/помощь/, replyer.help);
   bot.hears(/(т|в)ы\s+(?<text>.*)/, replyer.replyYou);
   bot.hears(/(мудак|говно).*/, replyer.replyYou);
   bot.hears(/(топ|top)$/, replyer.top);

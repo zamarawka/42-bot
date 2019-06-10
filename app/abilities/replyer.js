@@ -8,6 +8,7 @@ const User = require('../Models/User');
 const { isAngry } = require('../utils');
 
 const replies = readYaml.sync('./i18n/ru/replies.yml');
+const { help } = readYaml.sync('./i18n/ru/request.yml');
 
 module.exports.reply = async ({
   reply,
@@ -81,4 +82,8 @@ module.exports.top = async ({ replyWithChatAction, reply }) => {
   const table = top.map(({ user, dataValues }) => `${dataValues.praseCount} - ${user.viewName}`).join('\n');
 
   return reply(`${table}\nВсего: ${top.length}`);
+};
+
+module.exports.help = ({ reply }) => {
+  return reply(help.join('\n'));
 };
