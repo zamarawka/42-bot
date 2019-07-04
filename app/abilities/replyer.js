@@ -84,6 +84,4 @@ module.exports.top = async ({ replyWithChatAction, reply }) => {
   return reply(`${table}\nВсего: ${top.length}`);
 };
 
-module.exports.help = ({ reply }) => {
-  return reply(help.join('\n'));
-};
+module.exports.help = ({ reply }) => reply(help.join('\n'));
