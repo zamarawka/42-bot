@@ -16,19 +16,21 @@ module.exports.reply = async ({
   currentUser,
   replyWithChatAction,
 }) => {
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
-  for (const key in replies) {
-    const reg = new RegExp(key, 'i');
+  if (message.text) {
+    // eslint-disable-next-line no-restricted-syntax, guard-for-in
+    for (const key in replies) {
+      const reg = new RegExp(key, 'i');
 
-    if (message.text.match(reg)) {
-      const repl = replies[key];
+      if (message.text.match(reg)) {
+        const repl = replies[key];
 
-      if (Array.isArray(repl)) {
-        return reply(sample(repl));
-      }
+        if (Array.isArray(repl)) {
+          return reply(sample(repl));
+        }
 
-      if (isAngry(repl.rate)) {
-        return reply(sample(repl.answers));
+        if (isAngry(repl.rate)) {
+          return reply(sample(repl.answers));
+        }
       }
     }
   }
