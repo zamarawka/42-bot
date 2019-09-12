@@ -11,6 +11,7 @@
   "rules": {
     "strict": "off",
     "class-methods-use-this": 0,
-    "no-confusing-arrow": ["error", {"allowParens": true}]
+    "no-confusing-arrow": ["error", {"allowParens": true}],
+    "arrow-parens": [2, "as-needed", { "requireForBlockBody": true }]
   }
 }
