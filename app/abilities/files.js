@@ -38,6 +38,11 @@ module.exports.photo = async ({
     const { data } = results;
 
     if (data.searchInformation.totalResults < 1) {
+      logger.info('Empty photo search results', {
+        q,
+        searchConfig: config,
+      });
+
       return reply(sample(search));
     }
 
