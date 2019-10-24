@@ -37,7 +37,12 @@ module.exports.bash = async ({ reply, replyWithChatAction }) => {
   }
 };
 
-module.exports.currencies = async ({ reply, replyWithChatAction, replyWithMarkdown }) => {
+module.exports.currencies = async ({
+  reply,
+  replyWithChatAction,
+  replyWithMarkdown,
+  logger,
+}) => {
   replyWithChatAction('typing');
 
   try {
@@ -51,8 +56,9 @@ module.exports.currencies = async ({ reply, replyWithChatAction, replyWithMarkdo
     });
 
     return replyWithMarkdown(replyText);
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    logger.error('Request for currencies failed', err);
+
     return reply(sample(fails));
   }
 };
