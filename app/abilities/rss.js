@@ -1,4 +1,5 @@
 const sample = require('lodash/sample');
+const capitalize = require('lodash/capitalize');
 const Parser = require('rss-parser');
 const readYaml = require('read-yaml');
 const he = require('he');
@@ -50,7 +51,7 @@ module.exports.currencies = async ({
     let replyText = '';
 
     Object.entries(curr).forEach(([key, value]) => {
-      replyText += `_${key}_\n`;
+      replyText += `_${capitalize(key)}_\n`;
       replyText += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n');
       replyText += '\n\n';
     });
