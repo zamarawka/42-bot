@@ -21,6 +21,7 @@ module.exports = (bot) => {
   bot.hears(/(пиши|пейши)$/, soul.quote);
   bot.hears(translatorRegExp, soul.translate);
 
+  bot.hears(/(курс(ы?)|к(э|e)ш|мутк(и|а))$/, rss.currencies);
   bot.hears(/((ч(о|е|ё)\s+(там|нового)(?<q>.*))|(новости))$/, rss.news);
   bot.hears(/(баш|ебаш)$/, rss.bash);
 

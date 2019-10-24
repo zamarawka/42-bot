@@ -3,6 +3,8 @@ const Parser = require('rss-parser');
 const readYaml = require('read-yaml');
 const he = require('he');
 
+const Currencies = require('../services/Currencies');
+
 const { NEWS_URL, BASH_URL } = process.env;
 
 const parser = new Parser();
@@ -31,6 +33,26 @@ module.exports.bash = async ({ reply, replyWithChatAction }) => {
 
     return reply(`${he.decode(item.content.replace(/<br>/g, '\n'))}`);
   } catch (e) {
+    return reply(sample(fails));
+  }
+};
+
+module.exports.currencies = async ({ reply, replyWithChatAction, replyWithMarkdown }) => {
+  replyWithChatAction('typing');
+
+  try {
+    const curr = await Currencies.load();
+    let replyText = '';
+
+    Object.entries(curr).forEach(([key, value]) => {
+      replyText += `_${key}_\n`;
+      replyText += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n');
+      replyText += '\n\n';
+    });
+
+    return replyWithMarkdown(replyText);
+  } catch (e) {
+    console.log(e);
     return reply(sample(fails));
   }
 };
