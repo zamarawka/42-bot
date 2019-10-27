@@ -115,7 +115,8 @@ class Currencies {
             const type = i === 1 ? 'buy' : 'sell';
 
             curr[type] = $el.text()
-              .replace(/[^0-9.,]/ig, '');
+              .replace(/[^0-9.,]/ig, '')
+              .replace(',', '.');
           });
 
         result.push(curr);
@@ -128,7 +129,7 @@ class Currencies {
     const { data } = await axios.get(GAZPROM_CURRENCIES_URL);
 
     return data.items.map(({ ticker: name, sell, buy }) => ({
-      name,
+      name: name.toLowerCase(),
       sell,
       buy,
     }));
