@@ -48,13 +48,22 @@ module.exports.currencies = async ({
 
   try {
     const curr = await Currencies.load();
-    let replyText = '';
+    const findUsd = tiker => tiker.name === 'usd';
 
-    Object.entries(curr).forEach(([key, value]) => {
-      replyText += `_${capitalize(key)}_\n`;
-      replyText += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n');
-      replyText += '\n\n';
-    });
+    const replyText = Object.entries(curr)
+      .sort(([, a], [, b]) => {
+        const tikerA = a.find(findUsd);
+        const tikerB = b.find(findUsd);
+
+        return tikerB.buy - tikerA.buy;
+      })
+      .reduce((acc, [key, value]) => {
+        acc += `_${capitalize(key)}_\n`; // eslint-disable-line no-param-reassign
+        acc += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n'); // eslint-disable-line no-param-reassign
+        acc += '\n\n'; // eslint-disable-line no-param-reassign
+
+        return acc;
+      }, '');
 
     return replyWithMarkdown(replyText);
   } catch (err) {
