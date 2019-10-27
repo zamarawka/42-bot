@@ -5,9 +5,44 @@ const {
   SAUBER_CURRENCIES_URL,
   CROCUS_CURRENCIES_URL,
   GAZPROM_CURRENCIES_URL,
+  ALFA_CURRENCIES_URL,
 } = process.env;
 
 class Currencies {
+  static async loadAlfa() {
+    const { data } = await axios.get(ALFA_CURRENCIES_URL);
+
+    return Object.keys(data).reduce((acc, name) => {
+      const item = data[name];
+      const tikerName = name.toLowerCase();
+
+      if (['usd', 'eur'].includes(tikerName)) {
+        const result = { name: tikerName };
+
+        const typedItem = item.reduce((typeAcc, typeItem) => {
+          if (typeAcc[typeItem.type]) {
+            if (new Date(typeAcc[typeItem.type].date) < new Date(typeItem.date)) {
+              // eslint-disable-next-line no-param-reassign
+              typeAcc[typeItem.type] = typeItem;
+            }
+          } else {
+            // eslint-disable-next-line no-param-reassign
+            typeAcc[typeItem.type] = typeItem;
+          }
+
+          return typeAcc;
+        }, {});
+
+        result.sell = typedItem.sell.value;
+        result.buy = typedItem.buy.value;
+
+        acc.push(result);
+      }
+
+      return acc;
+    }, []);
+  }
+
   static async loadSauber() {
     const { data } = await axios.get(SAUBER_CURRENCIES_URL);
 
@@ -104,15 +139,22 @@ class Currencies {
       this.loadSauber(),
       this.loadCrocus(),
       this.loadGazprom(),
+      this.loadAlfa(),
     ]);
 
     const [
       sauber,
       crocus,
       gazprom,
+      alfabank,
     ] = res;
 
-    return { sauber, crocus, gazprom };
+    return {
+      sauber,
+      crocus,
+      gazprom,
+      alfabank,
+    };
   }
 }
 
