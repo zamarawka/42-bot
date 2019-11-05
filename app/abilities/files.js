@@ -38,10 +38,10 @@ module.exports.photo = async ({
     const { data } = results;
 
     if (data.searchInformation.totalResults < 1) {
-      logger.info('Empty photo search results', {
+      logger.info({
         q,
         searchConfig: config,
-      });
+      }, 'Empty photo search results');
 
       return reply(sample(search));
     }
@@ -53,12 +53,12 @@ module.exports.photo = async ({
       : await replyWithPhoto(image.link);
   } catch (err) {
     if (err.errors && err.errors[0].reason === 'dailyLimitExceeded') {
-      logger.error('Daily limit for google search exceeded', err.config);
+      logger.error(err.config, 'Daily limit for google search exceeded');
 
       return reply(sample(apiLimit));
     }
 
-    logger.error('Unhandled search error', err);
+    logger.error(err, 'Unhandled search error');
     return reply(sample(fails));
   }
 };

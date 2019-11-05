@@ -67,7 +67,7 @@ module.exports.currencies = async ({
 
     return replyWithMarkdown(replyText);
   } catch (err) {
-    logger.error('Request for currencies failed', err);
+    logger.error(err, 'Request for currencies failed');
 
     return reply(sample(fails));
   }
