@@ -1,15 +1,18 @@
 const sample = require('lodash/sample');
+const first = require('lodash/first');
 const capitalize = require('lodash/capitalize');
 const Parser = require('rss-parser');
 const readYaml = require('read-yaml');
+const axios = require('axios');
 const he = require('he');
 
 const Currencies = require('../services/Currencies');
 
-const { NEWS_URL, BASH_URL } = process.env;
+const { NEWS_URL, BASH_URL, WEATHER_URL } = process.env;
 
 const parser = new Parser();
 
+const { weather } = readYaml.sync('./i18n/ru/request.yml');
 const { fails } = readYaml.sync('./i18n/ru/request.yml');
 
 module.exports.news = async ({ reply, replyWithChatAction, replyWithMarkdown }) => {
@@ -68,6 +71,41 @@ module.exports.currencies = async ({
     return replyWithMarkdown(replyText);
   } catch (err) {
     logger.error(err, 'Request for currencies failed');
+
+    return reply(sample(fails));
+  }
+};
+
+module.exports.weather = async ({
+  reply,
+  replyWithChatAction,
+  replyWithMarkdown,
+  logger,
+}) => {
+  replyWithChatAction('typing');
+
+  try {
+    const res = await axios(WEATHER_URL);
+    const { data: [, data] } = JSON.parse(
+      res.data.trim().replace(/^s\(/, '').replace(/\);$/, ''),
+    );
+
+    const forecastKey = first(Object.keys(data.weather));
+    const forecast = data.weather[forecastKey];
+    const today = first(forecast.days);
+    const now = first(today.fa);
+    const replyArr = [
+      `*${forecast.name}* - ${today.date}\n`,
+      `*${weather.now}*: ${now.weather.text} ${now.weather.icon.emoji}`,
+      `*${weather.air.title}*: ${today.mi.air} ~ ${today.ma.air} ${weather.air.unit}`,
+      `*${weather.pressure.title}*: ${today.mi.pressure} ~ ${today.ma.pressure} ${weather.pressure.unit}`,
+      `*${weather.humidity.title}*: ${now.humidity} ${weather.humidity.unit}`,
+      `*${weather.wind.title}*: ${now.wind.speed} ${weather.wind.unit}`,
+    ];
+
+    return replyWithMarkdown(replyArr.join('\n'));
+  } catch (err) {
+    logger.error(err, 'Request for weather failed');
 
     return reply(sample(fails));
   }
