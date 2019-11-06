@@ -85,7 +85,11 @@ module.exports.weather = async ({
   replyWithChatAction('typing');
 
   try {
-    const res = await axios(WEATHER_URL);
+    const res = await axios(WEATHER_URL, {
+      params: {
+        callback: 's',
+      },
+    });
     const { data: [, data] } = JSON.parse(
       res.data.trim().replace(/^s\(/, '').replace(/\);$/, ''),
     );
