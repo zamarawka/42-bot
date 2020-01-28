@@ -2,7 +2,7 @@
   "name": "42-bot",
   "private": true,
   "version": "1.0.0",
-  "description": "",
+  "description": "Friendly neighbor",
   "main": "app",
   "scripts": {
     "start": "NODE_ENV=production node ./app",
@@ -13,7 +13,7 @@
     "lint:db": "eslint db"
   },
   "engines": {
-    "node": ">= 10.0.0"
+    "node": ">= 12.0.0"
   },
   "author": "zamarawka",
   "license": "ISC",
