@@ -55,15 +55,31 @@ module.exports.currencies = async ({
 
     const replyText = Object.entries(curr)
       .sort(([, a], [, b]) => {
+        if (!a && !b) {
+          return 0;
+        }
+
+        if (!a) {
+          return 1;
+        }
+
+        if (!b) {
+          return -1;
+        }
+
         const tikerA = a.find(findUsd);
         const tikerB = b.find(findUsd);
 
         return tikerB.buy - tikerA.buy;
       })
       .reduce((acc, [key, value]) => {
-        acc += `_${capitalize(key)}_\n`; // eslint-disable-line no-param-reassign
-        acc += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n'); // eslint-disable-line no-param-reassign
-        acc += '\n\n'; // eslint-disable-line no-param-reassign
+        acc += `_${capitalize(key)}_\n`;
+        if (value) {
+          acc += value.map(({ name, buy }) => `*${name.toUpperCase()}*: ${buy}`).join('\n');
+        } else {
+          acc += '💩';
+        }
+        acc += '\n\n';
 
         return acc;
       }, '');

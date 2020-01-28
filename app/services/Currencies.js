@@ -136,19 +136,25 @@ class Currencies {
   }
 
   static async load() {
-    const res = await Promise.all([
+    const res = await Promise.allSettled([
       this.loadSauber(),
       this.loadCrocus(),
       this.loadGazprom(),
       this.loadAlfa(),
     ]);
 
+    const result = res.map(({ value }) => value || null);
+
+    if (result.length === 0) {
+      throw new Error('Currencies@load empty result');
+    }
+
     const [
       sauber,
       crocus,
       gazprom,
       alfabank,
-    ] = res;
+    ] = result;
 
     return {
       sauber,
