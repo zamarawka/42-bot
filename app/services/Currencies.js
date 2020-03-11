@@ -1,3 +1,4 @@
+const get = require('lodash/get');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -6,6 +7,7 @@ const {
   CROCUS_CURRENCIES_URL,
   GAZPROM_CURRENCIES_URL,
   ALFA_CURRENCIES_URL,
+  TINKOFF_CURRENCIES_URL,
 } = process.env;
 
 class Currencies {
@@ -135,12 +137,48 @@ class Currencies {
     }));
   }
 
+  static async loadTinkoff() {
+    const res = await Promise.allSettled([
+      axios.get(TINKOFF_CURRENCIES_URL, {
+        params: {
+          from: 'USD',
+          to: 'RUB',
+        },
+      }),
+      axios.get(TINKOFF_CURRENCIES_URL, {
+        params: {
+          from: 'EUR',
+          to: 'RUB',
+        },
+      }),
+    ]);
+
+    const rates = res.map(({ value }) => get(value, 'data.payload.rates', null) || null);
+    const result = rates.map((rate) => {
+      const curr = rate.find(({ category }) => category === 'SavingAccountTransfers');
+
+      if (!curr) {
+        return null;
+      }
+
+      return {
+        name: curr.fromCurrency.name.toLowerCase(),
+        sell: curr.sell,
+        buy: curr.buy,
+      };
+    })
+      .filter(item => item !== null);
+
+    return result.length ? result : null;
+  }
+
   static async load() {
     const res = await Promise.allSettled([
       this.loadSauber(),
       this.loadCrocus(),
       this.loadGazprom(),
       this.loadAlfa(),
+      this.loadTinkoff(),
     ]);
 
     const result = res.map(({ value }) => value || null);
@@ -154,6 +192,7 @@ class Currencies {
       crocus,
       gazprom,
       alfabank,
+      tinkoff,
     ] = result;
 
     return {
@@ -161,6 +200,7 @@ class Currencies {
       crocus,
       gazprom,
       alfabank,
+      tinkoff,
     };
   }
 }
