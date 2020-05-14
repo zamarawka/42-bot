@@ -1,4 +1,6 @@
 const get = require('lodash/get');
+const groupBy = require('lodash/groupBy');
+const maxBy = require('lodash/maxBy');
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -53,37 +55,39 @@ class Currencies {
     const result = [];
 
     $('.widget-body .exchange-table.currency_table_1')
-      .eq(0)
-      .find('tr')
-      .each((trIndex, trEl) => {
-        if (trIndex === 0 || trIndex > 2) {
-          return;
-        }
-
-        const curr = {};
-
-        $(trEl).find('td')
-          .each((i, el) => {
-            if (i > 2) {
+      .each((index, tableEl) => {
+        $(tableEl).find('tr')
+          .each((trIndex, trEl) => {
+            if (trIndex === 0 || trIndex > 2) {
               return;
             }
 
-            const $el = $(el);
+            const curr = {};
 
-            if (i === 0) {
-              curr.name = $el.text().toLowerCase();
-            }
+            $(trEl).find('td')
+              .each((i, el) => {
+                if (i > 2) {
+                  return;
+                }
 
-            const type = i === 1 ? 'buy' : 'sell';
+                const $el = $(el);
 
-            curr[type] = $el.text()
-              .replace(/[^0-9.,]/ig, '');
+                if (i === 0) {
+                  curr.name = $el.text().toLowerCase();
+                }
+
+                const type = i === 1 ? 'buy' : 'sell';
+                const price = $el.text()
+                  .replace(/[^0-9.,]/ig, '');
+
+                curr[type] = price;
+              });
+
+            result.push(curr);
           });
-
-        result.push(curr);
       });
 
-    return result;
+    return Object.values(groupBy(result, 'name')).map(arr => maxBy(arr, 'buy'));
   }
 
   static async loadCrocus() {
