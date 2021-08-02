@@ -70,7 +70,7 @@ module.exports.currencies = async ({
         const tikerA = a.find(findUsd);
         const tikerB = b.find(findUsd);
 
-        return tikerB.buy - tikerA.buy;
+        return (tikerB?.buy ?? 0) - (tikerA?.buy ?? 0);
       })
       .reduce((acc, [key, value]) => {
         acc += `_${capitalize(key)}_\n`;
