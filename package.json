@@ -29,7 +29,7 @@
     "giphy-api": "^2.0.1",
     "googleapis": "^40.0.0",
     "he": "^1.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "pino": "^5.12.6",
     "read-yaml": "^1.1.0",
     "rss-parser": "^3.7.1",
