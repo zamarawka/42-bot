@@ -179,7 +179,6 @@ class Currencies {
   static async load() {
     const res = await Promise.allSettled([
       this.loadSauber(),
-      this.loadCrocus(),
       this.loadGazprom(),
       this.loadAlfa(),
       this.loadTinkoff(),
@@ -193,7 +192,6 @@ class Currencies {
 
     const [
       sauber,
-      crocus,
       gazprom,
       alfabank,
       tinkoff,
@@ -201,7 +199,6 @@ class Currencies {
 
     return {
       sauber,
-      crocus,
       gazprom,
       alfabank,
       tinkoff,
