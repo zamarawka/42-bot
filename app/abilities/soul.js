@@ -6,7 +6,8 @@ const readYaml = require('read-yaml');
 
 const Translator = require('../services/Translator');
 
-const { fails, translate } = readYaml.sync('./i18n/ru/horoscope.yml');
+const { fails } = readYaml.sync('./i18n/ru/horoscope.yml');
+const { translate: i18nTranslate } = readYaml.sync('./i18n/ru/request.yml');
 const { HOROSCORE_URL, QUOTE_URL } = process.env;
 
 module.exports.predict = async ({
@@ -67,6 +68,6 @@ module.exports.translate = async ({ replyWithChatAction, reply, match }) => {
 
     return reply(translatedText);
   } catch (e) {
-    return reply(sample(translate));
+    return reply(sample(i18nTranslate));
   }
 };
