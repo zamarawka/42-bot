@@ -10,7 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint app db",
     "lint:app": "eslint app",
-    "lint:db": "eslint db"
+    "lint:db": "eslint db",
+    "migrate": "sequelize db:migrate",
+    "migrate:create": "sequelize migration:create",
+    "migrate:rollback": "sequelize db:migrate:undo",
+    "migrate:status": "sequelize db:migrate:status"
   },
   "engines": {
     "node": ">= 12.0.0"
@@ -42,6 +46,7 @@
     "pino-pretty": "^3.2.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.0"
+    "eslint-plugin-import": "^2.18.0",
+    "sequelize-cli": "^5.5.0"
   }
 }

@@ -5,7 +5,7 @@ const {
 } = require('sequelize');
 
 const { BOT_DAMN_RATE } = process.env;
-const sequelize = require('./');
+const sequelize = require('.');
 const { isAngry } = require('../utils');
 
 const notEmpty = str => (str || '');
