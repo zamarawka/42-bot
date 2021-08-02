@@ -1,5 +1,5 @@
 const { Model, INTEGER, STRING } = require('sequelize');
-const sequelize = require('./');
+const sequelize = require('.');
 const User = require('./User');
 
 class Phrase extends Model {}
