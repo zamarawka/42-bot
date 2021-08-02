@@ -1,4 +1,4 @@
-[![Ci Status](https://github.com/zamarawka/42-bot/workflows/main/badge.svg)](https://github.com/zamarawka/42-bot/actions)
+[![Ci Status](https://github.com/zamarawka/42-bot/workflows/CI/badge.svg)](https://github.com/zamarawka/42-bot/actions)
 
 # 42 bot
 
