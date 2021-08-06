@@ -1,5 +1,5 @@
 const TorSpeech = require('tor-speech');
-const { Readable, Transform } = require('stream');
+const { Readable } = require('stream');
 const ffmpeg = require('fluent-ffmpeg');
 const { resolve } = require('path');
 
@@ -35,25 +35,19 @@ class Speech {
     stream.push(buffer);
     stream.push(null);
 
-    const output = new Transform({
-      transform: (chunk, enc, cb) => cb(null, chunk),
-    });
-
-    ffmpeg()
+    const command = ffmpeg()
       .input(stream)
       .input(track)
       // .complexFilter('[0:0]volume=1[a];[1:0]volume=0.78[b];[a][b]amix=inputs=2:duration=first')
       .complexFilter('[0:a]asplit=2[sc][mix];[1:a][sc]sidechaincompress=threshold=0.1:ratio=20[bg]; [bg][mix]amerge[final]', 'final')
       .audioCodec('opus')
-      .format('ogg')
-      .output(output)
-      .on('error', (err) => {
-        output.destroy(err);
-      })
-      .on('end', () => {
-        output.end();
-      })
-      .run();
+      .format('ogg');
+
+    const output = command.pipe();
+
+    command.on('error', (err) => {
+      output.destroy(err);
+    });
 
     return output;
   }
@@ -80,7 +74,7 @@ class Speech {
   }
 
   static kill() {
-    if (this.speechApi) {
+    if (this.speechApi && typeof this.speechApi.killTor === 'function') {
       this.speechApi.killTor();
     }
   }
