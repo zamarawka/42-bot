@@ -16,3 +16,14 @@ bot.alive()
   .then(() => {
     logger.info('Bot alive');
   });
+
+const signals = ['SIGTERM', 'SIGINT', 'SIGUSR2'];
+signals.forEach((signal) => {
+  process.once(signal, () => {
+    bot.kill();
+
+    logger.info('Bot is dead');
+
+    process.kill(process.pid, signal);
+  });
+});

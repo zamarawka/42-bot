@@ -6,6 +6,7 @@ const isAngryBot = require('./middlewares/isAngryBot');
 const currentUserMiddleware = require('./middlewares/currentUser');
 const loggerMiddleware = require('./middlewares/logger');
 const isNewMessage = require('./middlewares/isNewMessage');
+const Speech = require('./services/Speech');
 
 const { NODE_ENV } = process.env;
 
@@ -37,6 +38,11 @@ class Bot {
     return Promise.all(
       this.connectors.map(connector => connector.launch()),
     );
+  }
+
+  kill() {
+    Speech.kill();
+    db.close();
   }
 
   addConnector(connector) {
