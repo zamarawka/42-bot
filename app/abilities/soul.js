@@ -93,6 +93,12 @@ module.exports.rap = async ({
 
     const source = await Speech.rap(text, trackFile);
 
+    source.on('error', (err) => {
+      logger.error({ text, track, err }, 'Rap source error.');
+
+      reply(sample(reqFails));
+    });
+
     return await replyWithVoice({ source });
   } catch (err) {
     logger.error({ text, track, err }, 'Rap request failed');
