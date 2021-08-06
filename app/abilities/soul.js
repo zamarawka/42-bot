@@ -4,10 +4,11 @@ const transform = require('lodash/transform');
 const parser = require('fast-xml-parser');
 const readYaml = require('read-yaml');
 
+const Speech = require('../services/Speech');
 const Translator = require('../services/Translator');
 
 const { fails } = readYaml.sync('./i18n/ru/horoscope.yml');
-const { translate: i18nTranslate } = readYaml.sync('./i18n/ru/request.yml');
+const { angryBot, fails: reqFails, translate: i18nTranslate } = readYaml.sync('./i18n/ru/request.yml');
 const { HOROSCORE_URL, QUOTE_URL } = process.env;
 
 module.exports.predict = async ({
@@ -66,8 +67,36 @@ module.exports.translate = async ({ replyWithChatAction, reply, match }) => {
 
     const translatedText = await Translator.translate(text, 'ru', fromLang);
 
-    return reply(translatedText);
+    return await reply(translatedText);
   } catch (e) {
     return reply(sample(i18nTranslate));
+  }
+};
+
+module.exports.rap = async ({
+  replyWithChatAction,
+  reply,
+  replyWithVoice,
+  match,
+  logger,
+}) => {
+  const { track = 'крово', text } = match.groups;
+
+  if (!text || text.length > 2500) {
+    return reply(sample(angryBot));
+  }
+
+  replyWithChatAction('record_voice');
+
+  try {
+    const trackFile = Speech.resolveAlias(track);
+
+    const source = await Speech.rap(text, trackFile);
+
+    return await replyWithVoice({ source });
+  } catch (err) {
+    logger.error({ text, track, err }, 'Rap request failed');
+
+    return reply(sample(reqFails));
   }
 };

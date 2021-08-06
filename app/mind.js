@@ -5,8 +5,10 @@ const game = require('./abilities/game');
 const rss = require('./abilities/rss');
 
 const Translator = require('./services/Translator');
+const Speech = require('./services/Speech');
 
 const translatorRegExp = new RegExp(`(?<lang>${Object.keys(Translator.aliases).join('|')})\\s+(?<text>.*)$`, 'm');
+const rapRegExp = new RegExp(`зачитай\\s+((?<track>${Object.keys(Speech.aliases).join('|')})\\s+)?(?<text>(.|\\n)*)$`, 'm');
 
 module.exports = (bot) => {
   bot.hears(/фото\s+(?<q>.*)$/, files.photo);
@@ -19,6 +21,7 @@ module.exports = (bot) => {
 
   bot.hears(/(вещай|гороскоп)$/, soul.predict);
   bot.hears(/(пиши|пейши)$/, soul.quote);
+  bot.hears(rapRegExp, soul.rap);
   bot.hears(translatorRegExp, soul.translate);
 
   bot.hears(/(курс(ы?)|к(э|e)ш|мутк(и|а))$/, rss.currencies);
