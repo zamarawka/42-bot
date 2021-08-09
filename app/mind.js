@@ -21,6 +21,7 @@ module.exports = (bot) => {
 
   bot.hears(/(вещай|гороскоп)$/, soul.predict);
   bot.hears(/(пиши|пейши)$/, soul.quote);
+  bot.hears(/(?<query>что|кто|чем|где|куда|когда|зачем|кого|кому|каким|какой|сколько|чей)\s+(?<text>(.|\\n)*)$/, soul.quest);
   bot.hears(rapRegExp, soul.rap);
   bot.hears(translatorRegExp, soul.translate);
 

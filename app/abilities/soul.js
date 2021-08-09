@@ -6,9 +6,15 @@ const readYaml = require('read-yaml');
 
 const Speech = require('../services/Speech');
 const Translator = require('../services/Translator');
+const Talk = require('../services/Talk');
 
 const { fails } = readYaml.sync('./i18n/ru/horoscope.yml');
-const { angryBot, fails: reqFails, translate: i18nTranslate } = readYaml.sync('./i18n/ru/request.yml');
+const {
+  angryBot,
+  fails: reqFails,
+  translate: i18nTranslate,
+  search,
+} = readYaml.sync('./i18n/ru/request.yml');
 const { HOROSCORE_URL, QUOTE_URL } = process.env;
 
 module.exports.predict = async ({
@@ -104,5 +110,23 @@ module.exports.rap = async ({
     logger.error({ text, track, err }, 'Rap request failed');
 
     return reply(sample(reqFails));
+  }
+};
+
+module.exports.quest = async ({
+  replyWithChatAction,
+  reply,
+  match,
+}) => {
+  replyWithChatAction('typing');
+
+  const { query, text } = match.groups;
+
+  try {
+    const { text: phrase } = await Talk.phrase(`${query} ${text}`, sample(Talk.themes));
+
+    return await reply(phrase);
+  } catch (err) {
+    return reply(sample(search));
   }
 };
