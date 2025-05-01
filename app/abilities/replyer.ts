@@ -56,7 +56,7 @@ export async function reply(ctx: BotContext) {
     try {
       const replyText = await Talk.phrase(text, replyToMessage);
 
-      return await ctx.replyWithMarkdown(replyText);
+      return await ctx.reply(replyText);
     } catch (err: any) {
       ctx.logger.error({ text, replyToMessage, err }, 'Reply to message failed');
 
