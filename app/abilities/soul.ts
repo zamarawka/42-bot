@@ -1,5 +1,6 @@
 import axios from 'axios';
 import parser from 'fast-xml-parser';
+import telegramFormat from 'formatter-chatgpt-telegram';
 import sample from 'lodash/sample';
 import transform from 'lodash/transform';
 import readYaml from 'read-yaml';
@@ -149,7 +150,7 @@ export async function quest(ctx: BotContextFor<'text'>) {
   try {
     const replyText = await Talk.phrase(text);
 
-    return await ctx.reply(replyText);
+    return await ctx.replyWithHTML(telegramFormat(replyText));
   } catch (err) {
     ctx.logger.error({ err }, 'Quest request failed');
 

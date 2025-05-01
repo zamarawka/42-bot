@@ -1,3 +1,4 @@
+import telegramFormat from 'formatter-chatgpt-telegram';
 import get from 'lodash/get';
 import sample from 'lodash/sample';
 import readYaml from 'read-yaml';
@@ -56,7 +57,7 @@ export async function reply(ctx: BotContext) {
     try {
       const replyText = await Talk.phrase(text, replyToMessage);
 
-      return await ctx.reply(replyText);
+      return await ctx.replyWithHTML(telegramFormat(replyText));
     } catch (err: any) {
       ctx.logger.error({ text, replyToMessage, err }, 'Reply to message failed');
 
