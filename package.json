@@ -5,25 +5,36 @@
   "description": "Friendly neighbor",
   "main": "app",
   "scripts": {
-    "start": "NODE_ENV=production node ./app",
-    "dev": "NODE_ENV=development nodemon --use_strict --quiet -e js,json,yml | pino-pretty -c -l -t",
+    "start": "NODE_ENV=production node ./build",
+    "clean": "rimraf ./build",
+    "build": "npm run clean && tsc --declaration false --outDir ./build",
+    "dev": "NODE_ENV=development nodemon --quiet -e js,ts,json,yml --exec 'ts-node' --files ./app/index.ts | pino-pretty -c -l -t",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint app db",
     "lint:app": "eslint app",
     "lint:db": "eslint db",
+    "typeorm": "[ \"$NODE_ENV\" = 'production' ] && CMD='typeorm:prod' || CMD='typeorm:dev'; npm run $CMD",
+    "typeorm:dev": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -d ./app/db/index.ts",
+    "typeorm:prod": "typeorm -d ./dist/db/index",
+    "db:migration:generate": "func () { npm run typeorm:dev -- migration:generate -p \"./app/db/migrations/${1}\"; }; func",
+    "db:migration:create": "func () { npm run typeorm:dev -- migration:create \"./app/db/migrations/${1}\"; }; func",
+    "db:migration:run": "npm run typeorm -- migration:run",
+    "db:migration:revert": "npm run typeorm -- migration:revert",
     "migrate": "sequelize db:migrate",
     "migrate:create": "sequelize migration:create",
     "migrate:rollback": "sequelize db:migrate:undo",
     "migrate:status": "sequelize db:migrate:status"
   },
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">= 22.0.0"
   },
   "author": "zamarawka",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.0",
     "cheerio": "^1.0.0-rc.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "dotenv": "^8.0.0",
     "fast-xml-parser": "^3.12.16",
     "fluent-ffmpeg": "^2.1.2",
@@ -31,24 +42,35 @@
     "googleapis": "^40.0.0",
     "he": "^1.2.0",
     "lodash": "^4.17.15",
-    "pino": "^5.12.6",
+    "openai": "^4.96.0",
+    "pino": "^8.18.0",
     "read-yaml": "^1.1.0",
+    "reflect-metadata": "^0.2.2",
     "rss-parser": "^3.7.1",
     "sequelize": "^5.15.1",
-    "sqlite3": "^4.2.0",
-    "telegraf": "^3.30.1",
-    "tor-speech": "^1.0.9",
-    "xml2json": "^0.11.2"
+    "sqlite3": "^5.1.7",
+    "telegraf": "^4.16.0",
+    "tor-axios": "^1.0.11",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.8.3"
   },
   "jest": {
     "testEnvironment": "node"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4",
-    "pino-pretty": "^3.2.2",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/fluent-ffmpeg": "^2.1.27",
+    "@types/giphy-api": "^2.0.6",
+    "@types/he": "^1.2.3",
+    "@types/lodash": "^4.14.202",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.0",
+    "nodemon": "^3.0.3",
+    "pino-pretty": "^10.3.1",
+    "prettier": "^3.5.1",
+    "rimraf": "^6.0.1",
     "sequelize-cli": "^5.5.0"
   }
 }
