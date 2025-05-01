@@ -149,8 +149,10 @@ export async function quest(ctx: BotContextFor<'text'>) {
   try {
     const replyText = await Talk.phrase(text);
 
-    return await ctx.reply(replyText);
+    return await ctx.replyWithMarkdown(replyText);
   } catch (err) {
+    ctx.logger.error({ err }, 'Quest request failed');
+
     return ctx.reply(sample(search));
   }
 }
