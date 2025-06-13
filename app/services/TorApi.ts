@@ -68,7 +68,11 @@ export default class TorApi {
   }
 
   async runProcess() {
+    logger.info('TorApi: start process');
+
     this.browser = await this.startProcess(config.TOR_PATH);
+
+    logger.info('TorApi: browser is active');
 
     this.processManage();
   }
