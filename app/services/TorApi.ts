@@ -1,4 +1,7 @@
 import { type ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { mkdtemp } from 'fs/promises';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { type Readable } from 'stream';
 import torAxios from 'tor-axios';
 
@@ -10,6 +13,8 @@ enum SSTLangCodes {
   en = 'en_EN',
 }
 
+const TOR_PORT = 9050;
+
 export default class TorApi {
   tor!: ReturnType<typeof torAxios.torSetup>;
   browser?: ChildProcessWithoutNullStreams;
@@ -17,32 +22,54 @@ export default class TorApi {
   constructor() {
     const tor = torAxios.torSetup({
       ip: 'localhost',
-      port: 9050,
+      port: TOR_PORT,
     });
 
     this.tor = tor;
   }
 
-  startProcess(torPath: string) {
-    const browser = spawn(torPath);
+  async startProcess(torPath: string) {
+    const tempDir = await mkdtemp(join(tmpdir(), 'tor_'));
+
+    const torArgs = ['--SocksPort', `${TOR_PORT}`, '--DataDirectory', tempDir];
+
+    const browser = spawn(torPath, torArgs);
 
     return new Promise<ChildProcessWithoutNullStreams>((resolve, reject) => {
       const onData = (chunk: any) => {
-        logger.debug({ out: String(chunk) }, 'TorApi process stdout');
+        const out = String(chunk);
 
-        if (!!String(chunk).match(/100%/)) {
+        logger.debug({ out }, 'TorApi process stdout');
+
+        if (!!out.match(/100%/)) {
           browser.stdout.off('data', onData);
           browser.off('error', onFail);
           browser.off('exit', onFail);
 
           resolve(browser);
+
+          return;
+        }
+
+        if (out.includes('Problem bootstrapping')) {
+          browser.stdout.off('data', onData);
+
+          logger.error({ out }, 'TorApi process bootsrap error');
+
+          browser.kill();
+
+          reject();
+
+          return;
         }
       };
 
-      const onFail = () => {
+      const onFail = (err: any) => {
         browser.stdout.off('data', onData);
         browser.off('error', onFail);
         browser.off('exit', onFail);
+
+        logger.error({ error: err }, 'TorApi process failed');
 
         reject();
       };
