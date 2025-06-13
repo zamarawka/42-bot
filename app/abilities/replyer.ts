@@ -5,6 +5,7 @@ import readYaml from 'read-yaml';
 import { message as messageFilter } from 'telegraf/filters';
 
 import { BotContext, BotContextFor } from '../Connectors/Telegram';
+import config from '../config';
 import Phrase from '../db/Phrase';
 import Talk from '../services/Talk';
 import { isAngry } from '../utils';
@@ -48,7 +49,11 @@ export async function reply(ctx: BotContext) {
     return ctx.reply(`${ctx.currentUser.viewName}, ты ${phrase.content}`);
   }
 
-  if (ctx.has(messageFilter('reply_to_message')) && ctx.has(messageFilter('text'))) {
+  if (
+    ctx.has(messageFilter('reply_to_message')) &&
+    (isAngry(config.BOT_DAMN_RATE) || ctx.message.reply_to_message.from?.id === ctx.botInfo.id) &&
+    ctx.has(messageFilter('text'))
+  ) {
     ctx.sendChatAction('typing');
 
     const text: string = (ctx as any).message.text;
