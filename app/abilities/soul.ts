@@ -152,7 +152,7 @@ export async function quest(ctx: BotContextFor<'text'>) {
 
     return await ctx.replyWithHTML(telegramFormat(replyText));
   } catch (err) {
-    ctx.logger.error({ err }, 'Quest request failed');
+    ctx.logger.error({ err, text }, 'Quest request failed');
 
     return ctx.reply(sample(search));
   }
