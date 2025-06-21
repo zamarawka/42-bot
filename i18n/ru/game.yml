@@ -2,10 +2,10 @@ dice:
   play:
     - "${username} бросает кости: ${user_dice_one} и ${user_dice_two}\nЖзяцля бросает кости: ${bot_dice_one} и ${bot_dice_two}"
   win:
-    - "${username} выиграл!"
+    - '${username} выиграл!'
   lose:
-    - "${username} проебал!"
-    - "Жзяцля победил!"
-    - "${username} лузер!"
+    - '${username} проебал!'
+    - 'Жзяцля победил!'
+    - '${username} лузер!'
   draw:
-    - "ничья!"
+    - 'ничья!'
