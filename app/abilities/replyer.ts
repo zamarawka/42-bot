@@ -14,7 +14,7 @@ const replies = readYaml.sync('./i18n/ru/replies.yml');
 const requests = readYaml.sync('./i18n/ru/request.yml');
 
 export async function reply(ctx: BotContext) {
-  if (ctx.has(messageFilter('text'))) {
+  if (ctx.has(messageFilter('text')) && !ctx.has(messageFilter('reply_to_message'))) {
     // eslint-disable-next-line no-restricted-syntax, guard-for-in
     for (const key in replies) {
       const reg = new RegExp(key, 'i');
